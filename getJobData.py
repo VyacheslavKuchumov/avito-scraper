@@ -28,15 +28,30 @@ for page in range(1, 101):
 
     soup = BeautifulSoup(driver.page_source, 'lxml')
 
-    jobs = soup.find_all('a', {'itemprop': 'url'})
+    jobBlocks = soup.find_all('div', {'data-marker':'item'})
 
+    for jobBlock in jobBlocks:
+        job = jobBlock.find_next('a', {'itemprop': 'url', 'data-marker':'item-title'})
+        blockLines = jobBlock.find_all_next('div',{'data-marker': "item-line"})
 
-    jobs = set(jobs)
+        if blockLines[0].text == "Компания":
+            fieldOfExp = blockLines[1].text
+        else:
+            fieldOfExp = blockLines[0].text
 
-    for job in jobs:
+        salary = jobBlock.find_next('meta', {"itemprop": "price"})
+
         jobUrl_collection.insert_one({
-            "jobUrl": job['href']
+            "jobName": job['title'],
+            "jobUrl": job['href'],
+            "fieldOfExp": fieldOfExp,
+            "salary": salary['content']
         })
+
+
+
+
+
     print(f"Current page is:{page}")
     # input("************\nWaiting for input to continue\n************\nPress enter...")
 
