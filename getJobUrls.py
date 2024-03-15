@@ -35,7 +35,6 @@ for page in range(1, 101):
 
     for job in jobs:
         jobUrl_collection.insert_one({
-            "jobName": job.text,
             "jobUrl": job['href']
         })
     print(f"Current page is:{page}")
