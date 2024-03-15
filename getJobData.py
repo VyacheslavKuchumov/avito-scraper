@@ -6,7 +6,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 
-from dbConnection import jobUrl_collection
+from dbConnection import jobs_collection
 
 
 
@@ -41,11 +41,11 @@ for page in range(1, 101):
 
         salary = jobBlock.find_next('meta', {"itemprop": "price"})
 
-        jobUrl_collection.insert_one({
+        jobs_collection.insert_one({
             "jobName": job['title'],
             "jobUrl": job['href'],
             "fieldOfExp": fieldOfExp,
-            "salary": salary['content']
+            "salary": int(salary['content'])
         })
 
 
