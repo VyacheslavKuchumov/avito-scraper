@@ -6,7 +6,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 
-from dbConnection import job_collection
+from dbConnection import jobUrl_collection
 
 
 
@@ -20,7 +20,7 @@ driver = webdriver.Chrome(
     # other properties...
 )
 
-for page in range(1, 100):
+for page in range(1, 101):
 
     driver.get(f'https://www.avito.ru/perm/vakansii?p={page}')
 
@@ -34,10 +34,17 @@ for page in range(1, 100):
     jobs = set(jobs)
 
     for job in jobs:
-        job_collection.insert_one({"jobUrl": job['href']})
+        jobUrl_collection.insert_one({
+            "jobName": job.text,
+            "jobUrl": job['href']
+        })
     print(f"Current page is:{page}")
-    input("************\nWaiting for input to continue\n************\n")
+    # input("************\nWaiting for input to continue\n************\nPress enter...")
+
     print("Scraping...")
+
+
+
 
 driver.quit()
 
