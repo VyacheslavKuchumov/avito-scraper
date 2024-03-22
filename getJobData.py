@@ -1,5 +1,6 @@
 import random
 import time
+import datetime
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -20,8 +21,24 @@ driver = webdriver.Chrome(
     # other properties...
 )
 
-for page in range(1, 101):
+def get_num_of_pages(url):
 
+    driver.get(url)
+    soup = BeautifulSoup(driver.page_source, 'lxml')
+    pages = soup.find('ul', {'data-marker':"pagination-button"})
+    lastPage = pages.find_all_next('li')[-60]
+
+    # for index, page in enumerate(lastPage):
+    #     print(index, page.text)
+
+    return int(lastPage.text)
+
+lastPage = get_num_of_pages('https://www.avito.ru/perm/vakansii')
+
+
+
+for page in range(1, lastPage+1):
+    duplicates = 0
     driver.get(f'https://www.avito.ru/perm/vakansii?p={page}')
 
     # scraping logic...
@@ -41,18 +58,24 @@ for page in range(1, 101):
 
         salary = jobBlock.find_next('meta', {"itemprop": "price"})
 
-        jobs_collection.insert_one({
-            "jobName": job['title'],
-            "jobUrl": job['href'],
-            "fieldOfExp": fieldOfExp,
-            "salary": int(salary['content'])
-        })
+        if jobs_collection.find_one({"jobUrl": job['href']}) is None:
+            jobs_collection.insert_one({
+                "jobName": job['title'],
+                "jobUrl": job['href'],
+                "fieldOfExp": fieldOfExp,
+                "salary": int(salary['content']),
+                "dateOfScraping": datetime.datetime.now().strftime("%x")
+            })
+        else:
+            duplicates+=1
 
 
 
 
 
-    print(f"Current page is:{page}")
+
+    print(f"Current page is: {page}")
+    print(f"duplicates found: {duplicates}")
     # input("************\nWaiting for input to continue\n************\nPress enter...")
 
     print("Scraping...")
