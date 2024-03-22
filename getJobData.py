@@ -36,6 +36,8 @@ def get_num_of_pages(url):
 lastPage = get_num_of_pages('https://www.avito.ru/perm/vakansii')
 
 
+newJobs = 0
+allDuplicates = 0
 
 for page in range(1, lastPage+1):
     duplicates = 0
@@ -66,6 +68,7 @@ for page in range(1, lastPage+1):
                 "salary": int(salary['content']),
                 "dateOfScraping": datetime.datetime.now().strftime("%x")
             })
+            newJobs+=1
         else:
             duplicates+=1
 
@@ -76,6 +79,7 @@ for page in range(1, lastPage+1):
 
     print(f"Current page is: {page}")
     print(f"duplicates found: {duplicates}")
+    allDuplicates+=duplicates
     # input("************\nWaiting for input to continue\n************\nPress enter...")
 
     print("Scraping...")
@@ -85,6 +89,7 @@ for page in range(1, lastPage+1):
 
 driver.quit()
 
+print(f"Program finished\nFound {newJobs} new jobs\nStumbled upon {allDuplicates} duplicates")
 
 
 
