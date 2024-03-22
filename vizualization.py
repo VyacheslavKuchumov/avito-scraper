@@ -12,6 +12,7 @@ for field in df['fieldOfExp']:
         fields.append(field)
 
 
-
-print(fields)
+fieldCount = {field: 0 for field in fields}
+for field in df['fieldOfExp']:
+    fieldCount[field] +=1
 
