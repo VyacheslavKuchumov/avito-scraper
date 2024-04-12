@@ -26,22 +26,34 @@ def get_num_of_pages(url):
     driver.get(url)
     soup = BeautifulSoup(driver.page_source, 'lxml')
     pages = soup.find('ul', {'data-marker':"pagination-button"})
-    lastPage = pages.find_all_next('li')[-60]
+    #lastPage = pages.find_all_next('li')[-60]
 
+    lastPage = pages.find_all_next('li')
     # for index, page in enumerate(lastPage):
     #     print(index, page.text)
+    hopefullyPages = []
+    for stuff in lastPage:
+        try:
 
-    return int(lastPage.text)
+            hopefullyPages.append(int(stuff.text))
+        except ValueError:
+            pass
 
-lastPage = get_num_of_pages('https://www.avito.ru/perm/vakansii')
+    print(f'Last page is: {hopefullyPages[-1]}')
+    return hopefullyPages[-1]
 
+
+url = 'https://www.avito.ru/perm/vakansii/it_internet_telekom-ASgBAgICAUSOC_SdAQ'
+
+lastPage = get_num_of_pages(url)
+# lastPage = 100
 
 newJobs = 0
 allDuplicates = 0
 
 for page in range(1, lastPage+1):
     duplicates = 0
-    driver.get(f'https://www.avito.ru/perm/vakansii?p={page}')
+    driver.get(url+f'?p={page}')
 
     # scraping logic...
 
