@@ -43,7 +43,7 @@ def get_num_of_pages(url):
     return hopefullyPages[-1]
 
 
-url = 'https://www.avito.ru/perm/vakansii/it_internet_telekom-ASgBAgICAUSOC_SdAQ'
+url = 'https://www.avito.ru/perm/vakansii/avtomobilnyy_biznes'
 
 lastPage = get_num_of_pages(url)
 # lastPage = 100
